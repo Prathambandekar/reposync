@@ -1,2 +1,21 @@
-#!/bin/bash
-df -Th | awk '{ print $1,$2, $6 }' | grep xfs
+server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location /packages/ {
+        alias /mnt/efs/packages/;
+
+        autoindex on;
+        autoindex_exact_size off;
+        autoindex_localtime on;
+
+        add_header X-Content-Type-Options nosniff;
+    }
+}
